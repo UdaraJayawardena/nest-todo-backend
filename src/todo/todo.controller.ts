@@ -1,5 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Req } from '@nestjs/common';
 import { TodoService } from './todo.service';
+import { Request } from 'express';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('todo')
 export class TodoController {
@@ -24,27 +26,33 @@ export class TodoController {
     }
 
     // Fetch todos with different sorting methods based on query parameters
-    @Get('todos')
+    @Get('sort')
+    @UseGuards(JwtAuthGuard)
     async getTodos(
         @Query('status') status: string,   // 'true' or 'false' for completed/uncompleted
         @Query('sortBy') sortBy: string,   // 'createdAt' or 'completedAt'
-        @Query('order') order: string      // 'asc' or 'desc' for sorting order
+        @Query('order') order: string,      // 'asc' or 'desc' for sorting order
+        @Req() request: Request,               // Get the request to access logged-in user 
     ) {
-        // Convert status to boolean
+        const userId = request.user.userId       // Get the userId from JWT token
+        console.log(userId);
+
         const statusBool = status === 'true';
 
-        // Default sorting is by 'createdAt' in descending order if no parameters are passed
         const sortByField = sortBy === 'completedAt' ? 'completedAt' : 'createdAt';
         const sortOrder = order === 'asc' ? 'asc' : 'desc';
 
-        return this.todoService.getTodos(statusBool, sortByField, sortOrder);
+        return this.todoService.getTodos(statusBool, sortByField, sortOrder, userId);
     }
 
 
     @Get('status')
+    @UseGuards(JwtAuthGuard)
     async filterByStatus(
         @Query('filter') filter: string,   // 'all', 'completed', or 'uncompleted'
+        @Req() request: Request, 
     ) {
+        const userId = request.user.userId       // Get the userId from JWT token
         let statusFilter: boolean | null = null;
 
         if (filter === 'completed') {
@@ -53,6 +61,6 @@ export class TodoController {
             statusFilter = false; // Only uncompleted to-dos
         }
 
-        return this.todoService.filterByStatus(statusFilter);
+        return this.todoService.filterByStatus(statusFilter, userId);
     }
 }

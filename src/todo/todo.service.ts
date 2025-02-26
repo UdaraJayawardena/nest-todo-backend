@@ -3,7 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class TodoService {
-    constructor(private prisma: PrismaService) { }
+    constructor(private readonly prisma: PrismaService) { }
 
     // Create
     async createTodo(data: { userId: number; title: string, completed: boolean }) {
@@ -31,7 +31,7 @@ export class TodoService {
 
 
     // Fetch todos with dynamic sorting and filtering based on query params
-    async getTodos(status: boolean, sortBy: string, order: string) {
+    async getTodos(status: boolean, sortBy: string, order: string, userId: number) {
         // Build dynamic sorting order
         const orderBy: any = {
             [sortBy]: order === 'asc' ? 'asc' : 'desc',
@@ -40,6 +40,7 @@ export class TodoService {
         // Fetch todos with sorting and filtering by status (completed/uncompleted)
         return this.prisma.todo.findMany({
             where: {
+                userId: userId,  // Filter by userId
                 completed: status, // Filter by completed or uncompleted based on status query
             },
             orderBy: orderBy,  // Apply dynamic sorting
@@ -47,8 +48,8 @@ export class TodoService {
     }
 
     // Fetch todos with dynamic filtering based on query params
-    async filterByStatus(status: boolean | null) {
-        const where = status !== null ? { completed: status } : {};
+    async filterByStatus(status: boolean | null, userId: number) {
+        const where = status !== null ? { completed: status, userId } : {};
 
         // Fetch todos with filtering (if needed)
         return this.prisma.todo.findMany({

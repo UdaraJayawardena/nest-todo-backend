@@ -26,7 +26,14 @@
 $ npm install
 ```
 
-## Compile and run the project
+## Run the Database Migration
+
+```bash
+  npm run prisma:migrate
+  npm run prisma:generate
+```
+
+## Compile and Run the project
 
 ```bash
 # development
