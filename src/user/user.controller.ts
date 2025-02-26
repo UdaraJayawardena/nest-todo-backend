@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, ConflictException } from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
@@ -12,12 +12,21 @@ export class UserController {
   }
 
   @Post('register')
-  registerUser(@Body() body: { username: string, email: string, password: string }) {
+  async registerUser(@Body() body: { username: string, email: string, password: string }) {
     const { username, email, password } = body;
+    try {
 
-    return this.userService.createUser(username, email, password);
+      const newUser = await this.userService.createUser(username, email, password);
+      return newUser;
+
+    } catch (error) {
+      if (error instanceof ConflictException) {
+        throw error;
+      }
+      throw new Error('An error occurred while registering the user');
+    }
   }
-  
+
   @Get()
   @UseGuards(JwtAuthGuard)
   findAllUsers() {
