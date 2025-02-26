@@ -1,0 +1,10 @@
+model Todo {
+  id          Int      @id @default(autoincrement())
+  userId      Int     
+  title       String  
+  completed   Boolean  @default(false) 
+  createdAt   DateTime @default(now()) 
+  completedAt DateTime?
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

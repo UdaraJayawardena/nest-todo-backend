@@ -1,3 +1,0 @@
-model Todo {
-  id        Int      @id @default(autoincrement())
-}
