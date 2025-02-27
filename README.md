@@ -41,7 +41,9 @@ $ npm run start
 
 # watch mode
 $ npm run start:dev
+```
+## API Documentation
 
-# production mode
-$ npm run start:prod
+```bash
+  http://localhost:3000/api/docs
 ```
