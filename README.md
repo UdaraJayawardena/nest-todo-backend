@@ -25,6 +25,17 @@
 ```bash
 $ npm install
 ```
+## Setup the Environment Variables
+
+Before running the project, make sure to add the required environment variables.
+
+1. Copy `.env.example` to `.env`:
+   ```bash
+   cp .env.example .env
+
+2. Update the values in .env with the appropriate credentials.
+
+3. Make sure the .env file is in the root directory of the project.
 
 ## Run the Database Migration
 
@@ -45,5 +56,5 @@ $ npm run start:dev
 ## API Documentation
 
 ```bash
-  http://localhost:3000/api/docs
+http://localhost:3000/api/docs
 ```
