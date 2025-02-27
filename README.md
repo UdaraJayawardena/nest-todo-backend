@@ -20,7 +20,7 @@
   <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
 </p>
 
-## Project setup
+## Project Setup
 
 ```bash
 $ npm install
@@ -44,7 +44,7 @@ Before running the project, make sure to add the required environment variables.
   npm run prisma:generate
 ```
 
-## Compile and Run the project
+## Compile and Run the Project
 
 ```bash
 # development
