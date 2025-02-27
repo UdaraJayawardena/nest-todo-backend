@@ -1,5 +1,3 @@
-// merge-schema.js
-
 const fs = require('fs');
 
 // Read the contents from multiple schema files
@@ -23,7 +21,7 @@ ${userSchema}
 ${todoSchema}
 `;
 
-// Write the merged schema into the main schema.prisma
+// Write the merged schema into the main schema.prisma file
 fs.writeFileSync('prisma/schema/schema.prisma', finalSchema);
 
 console.log("=== Schemas merged into schema.prisma file ===");
