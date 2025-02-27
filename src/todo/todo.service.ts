@@ -1,18 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-
+import { CreateTodoDto } from './dto/create-todo';
 @Injectable()
 export class TodoService {
     constructor(private readonly prisma: PrismaService) { }
 
-    // Create
-    async createTodo(data: { userId: number; title: string, completed: boolean }) {
+    // Create one
+    async createTodo(userId: number, createTodoDto: CreateTodoDto) {
         return await this.prisma.todo.create({
-            data,
+            data: {
+                userId,
+                ...createTodoDto,
+            },
         });
     }
 
-    // Update
+    // Update one
     async updateTodo(id: number, completed: boolean) {
         return this.prisma.todo.update({
             where: { id },
@@ -22,6 +25,7 @@ export class TodoService {
             },
         });
     }
+
     // Delete One
     async deleteTodo(id: number) {
         return this.prisma.todo.delete({
@@ -32,18 +36,17 @@ export class TodoService {
 
     // Fetch todos with dynamic sorting and filtering based on query params
     async getTodos(status: boolean, sortBy: string, order: string, userId: number) {
-        // Build dynamic sorting order
+
         const orderBy: any = {
             [sortBy]: order === 'asc' ? 'asc' : 'desc',
         };
 
-        // Fetch todos with sorting and filtering by status (completed/uncompleted)
         return this.prisma.todo.findMany({
             where: {
-                userId: userId,  // Filter by userId
-                completed: status, // Filter by completed or uncompleted based on status query
+                userId: userId,
+                completed: status,
             },
-            orderBy: orderBy,  // Apply dynamic sorting
+            orderBy: orderBy,
         });
     }
 
@@ -51,9 +54,8 @@ export class TodoService {
     async filterByStatus(status: boolean | null, userId: number) {
         const where = status !== null ? { completed: status, userId } : {};
 
-        // Fetch todos with filtering (if needed)
         return this.prisma.todo.findMany({
-            where,  // Apply filter on completed status
+            where,
         });
     }
 }

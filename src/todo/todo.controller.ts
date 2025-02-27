@@ -1,39 +1,61 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Req } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { TodoService } from './todo.service';
 import { Request } from 'express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CreateTodoDto } from './dto/create-todo';
+import { UpdateTodoDto } from './dto/update-todo';
+import { SortTodoDto } from './dto/sort.todo';
+import { FilterDto } from './dto/filter.todo';
 
+@ApiTags('Todo')
+@ApiBearerAuth()
 @Controller('todo')
 export class TodoController {
     constructor(private readonly todoService: TodoService) { }
 
     @Post('create')
-    createTodo(@Body() data: { userId: number; title: string; completed: boolean }) {
-        return this.todoService.createTodo(data);
+    @UseGuards(JwtAuthGuard)
+    @ApiOperation({ summary: 'Create a new Todo' })
+    @ApiResponse({ status: 200, description: 'Successfully created' })
+    createTodo(@Body() body: CreateTodoDto,
+        @Req() request: Request) {
+        const userId = request.user.userId
+        return this.todoService.createTodo(userId, body);
     }
 
     @Patch('update/:id')
+    @UseGuards(JwtAuthGuard)
+    @ApiOperation({ summary: 'Update a new Todo' })
+    @ApiResponse({ status: 200, description: 'Successfully Updated' })
     async updateTodo(
         @Param('id') id: string,
-        @Body() body: { title: string; completed: boolean }
+        @Body() body: UpdateTodoDto
     ) {
         return this.todoService.updateTodo(Number(id), body.completed);
     }
 
     @Delete('delete/:id')
+    @UseGuards(JwtAuthGuard)
+    @ApiOperation({ summary: 'Delete a new Todo' })
+    @ApiResponse({ status: 200, description: 'Successfully Deleted' })
     async deleteTodo(@Param('id') id: string) {
         return this.todoService.deleteTodo(Number(id));
     }
 
-    // Fetch todos with different sorting methods based on query parameters
     @Get('sort')
     @UseGuards(JwtAuthGuard)
+    @ApiOperation({ summary: 'Retrieve a list of todos sorted based on query params and ordered in ascending or descending order' })
     async getTodos(
-        @Query('status') status: string,   // 'true' or 'false' for completed/uncompleted
-        @Query('sortBy') sortBy: string,   // 'createdAt' or 'completedAt'
-        @Query('order') order: string,      // 'asc' or 'desc' for sorting order
-        @Req() request: Request,               // Get the request to access logged-in user 
+        /*
+          status -> true' or 'false' for completed or uncompleted
+          sort by date -> 'createdAt' or 'completedAt'
+          order -> 'asc' or 'desc' for sorting order
+        */
+        @Query() { status, sortBy, order }: SortTodoDto,
+        @Req() request: Request,
     ) {
+
         const userId = request.user.userId       // Get the userId from JWT token
         console.log(userId);
 
@@ -45,22 +67,26 @@ export class TodoController {
         return this.todoService.getTodos(statusBool, sortByField, sortOrder, userId);
     }
 
-
     @Get('status')
     @UseGuards(JwtAuthGuard)
+    @ApiOperation({ summary: 'Filter todo list by the status' })
     async filterByStatus(
-        @Query('filter') filter: string,   // 'all', 'completed', or 'uncompleted'
-        @Req() request: Request, 
+        @Query() filterDto: FilterDto,
+        @Req() request: Request,
     ) {
         const userId = request.user.userId       // Get the userId from JWT token
         let statusFilter: boolean | null = null;
 
-        if (filter === 'completed') {
-            statusFilter = true;  // Only completed to-dos
-        } else if (filter === 'uncompleted') {
-            statusFilter = false; // Only uncompleted to-dos
+        if (filterDto.filter === 'completed') {
+            statusFilter = true;
+        } else if (filterDto.filter === 'uncompleted') {
+            statusFilter = false;
         }
 
         return this.todoService.filterByStatus(statusFilter, userId);
     }
 }
+
+
+
+

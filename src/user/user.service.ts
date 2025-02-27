@@ -18,6 +18,7 @@ export class UserService {
     });
   }
 
+  // Register a new user
   async createUser(username: string, email: string, password: string) {
 
     // Ensure username and password are provided
@@ -44,7 +45,12 @@ export class UserService {
 
   }
 
+  // Fetch all users
   async findAllUsers() {
-    return this.prisma.user.findMany();
+    const listOfUsers = await this.prisma.user.findMany();
+
+    const updatedList = listOfUsers.map(({ password, ...rest }) => rest);
+
+    return updatedList;
   }
 }
