@@ -6,7 +6,6 @@ const todoSchema = fs.readFileSync('prisma/models/todo.prisma', 'utf8');
 
 // Merge the schemas and update the schema.prisma file
 const finalSchema = `
-
 generator client {
   provider = "prisma-client-js"
 }
