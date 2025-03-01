@@ -60,7 +60,6 @@ export class TodoController {
         console.log(userId);
 
         const statusBool = status === 'true';
-
         const sortByField = sortBy === 'completedAt' ? 'completedAt' : 'createdAt';
         const sortOrder = order === 'asc' ? 'asc' : 'desc';
 
