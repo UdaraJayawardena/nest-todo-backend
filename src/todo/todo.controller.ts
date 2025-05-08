@@ -7,6 +7,7 @@ import { CreateTodoDto } from './dto/create-todo';
 import { UpdateTodoDto } from './dto/update-todo';
 import { SortTodoDto } from './dto/sort.todo';
 import { FilterDto } from './dto/filter.todo';
+import { GetUser } from '../auth/decorators/getUser';
 
 @ApiTags('Todo')
 @ApiBearerAuth()
@@ -54,10 +55,12 @@ export class TodoController {
         */
         @Query() { status, sortBy, order }: SortTodoDto,
         @Req() request: Request,
+        @GetUser('userId') userId: number
     ) {
-
-        const userId = request.user.userId       // Get the userId from JWT token
         console.log(userId);
+
+        // const userId = request.user.userId       // Get the userId from JWT token
+        // console.log(userId);
 
         const statusBool = status === 'true';
 
