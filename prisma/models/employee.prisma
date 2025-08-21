@@ -1,0 +1,11 @@
+model Employee {
+  id        Int      @id @default(autoincrement())
+  firstname String  
+  lastname  String  
+  email  String   
+  number  String   
+  gender  String   
+  photo  String   
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

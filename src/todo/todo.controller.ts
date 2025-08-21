@@ -37,7 +37,7 @@ export class TodoController {
     }
 
     @Delete('delete/:id')
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard)    
     @ApiOperation({ summary: 'Delete a new Todo' })
     @ApiResponse({ status: 200, description: 'Successfully Deleted' })
     async deleteTodo(@Param('id') id: string) {

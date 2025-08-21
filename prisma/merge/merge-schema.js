@@ -3,6 +3,8 @@ const fs = require('fs');
 // Read the contents from multiple schema files
 const userSchema = fs.readFileSync('prisma/models/user.prisma', 'utf8');
 const todoSchema = fs.readFileSync('prisma/models/todo.prisma', 'utf8');
+const employeeSchema = fs.readFileSync('prisma/models/employee.prisma', 'utf8');
+const customerSchema = fs.readFileSync('prisma/models/customer.prisma', 'utf8');
 
 // Merge the schemas and update the schema.prisma file
 const finalSchema = `
@@ -18,9 +20,13 @@ datasource db {
 ${userSchema}
 
 ${todoSchema}
+
+${employeeSchema}
+
+${customerSchema}
 `;
 
 // Write the merged schema into the main schema.prisma file
 fs.writeFileSync('prisma/schema/schema.prisma', finalSchema);
 
-console.log("=== Schemas merged into schema.prisma file ===");
+console.log('=== Schemas merged into schema.prisma file ===');
