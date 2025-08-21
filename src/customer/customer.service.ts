@@ -19,7 +19,6 @@ export class CustomerService {
             });
         }
     
-    
         // register a new customer
         async createCustomer(email: string, username: string, password: string) {
     

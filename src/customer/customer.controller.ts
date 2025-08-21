@@ -17,7 +17,7 @@ export class CustomerController {
   @ApiOperation({ summary: 'register a new customer' })
   @ApiResponse({ status: 200, description: 'customer created successfully' })
   // async registerCustomer(@Body() body: { email: string; username: string; password: string }) {
-  async registerCustomer(@Body() body: CreateCustomerDto) {
+  async registerCustomer(@Body() body: Customer) {
 
     try {
 
